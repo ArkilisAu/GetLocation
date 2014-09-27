@@ -7,10 +7,13 @@
 //
 
 import UIKit
-import CoreLocation
+import CoreLocation     // add the import
 
+// inherit from the class CLLocationManagerDelegate
 class ViewController: UIViewController, CLLocationManagerDelegate {
     
+    
+    // initialize a
     let locationManager = CLLocationManager()
     
     @IBOutlet weak var label_location: UILabel!
@@ -19,9 +22,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+        // There are two types of location access
+        // 1.requestWhenInUseAuthorization
+        // 2.requestAlwaysAuthorization
         locationManager.requestWhenInUseAuthorization()
+
     }
     
+    
+    
+    // Button function
     @IBAction func findMyLocation(sender: AnyObject) {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
@@ -29,6 +39,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         locationManager.startUpdatingLocation()
     }
     
+    
+    // implement the override function
     func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
         CLGeocoder().reverseGeocodeLocation(manager.location, completionHandler: {(placemarks, error)->Void in
             
@@ -46,6 +58,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         })
     }
     
+    // implement the override function
+    func locationManager(manager: CLLocationManager!, didFailWithError error: NSError!) {
+        println("Error while updating location " + error.localizedDescription)
+    }
+    
+    // implement the function
     func displayLocationInfo(placemark: CLPlacemark?) {
         if let containsPlacemark = placemark {
             //stop updating location to save battery life
@@ -65,10 +83,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             label_location.text = locality+"\n"+country
         }
         
-    }
-    
-    func locationManager(manager: CLLocationManager!, didFailWithError error: NSError!) {
-        println("Error while updating location " + error.localizedDescription)
     }
     
     override func didReceiveMemoryWarning() {
